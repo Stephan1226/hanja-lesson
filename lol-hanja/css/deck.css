@@ -240,13 +240,14 @@ svg.glyph path.faint { opacity: .35; }
 .stamp { color: #fff; opacity: 0; text-shadow: 0 0 30px rgba(255, 230, 170, .75), 0 0 80px rgba(255, 200, 120, .35), 0 10px 30px rgba(0, 0, 0, .7); }
 .stamp.fire { text-shadow: 0 0 30px rgba(255, 150, 50, .9), 0 0 90px rgba(255, 90, 20, .55), 0 10px 30px rgba(0, 0, 0, .7); }
 .scene.hit .stamp { animation: slam .55s cubic-bezier(.2, 1.4, .4, 1) both; }
-.ghosty { position: relative; color: #e8f9ff; opacity: 0; text-shadow: 0 0 24px rgba(127, 214, 255, .9), 0 0 70px rgba(80, 160, 255, .5); }
-.ghosty::before, .ghosty::after { content: attr(data-text); position: absolute; inset: 0; pointer-events: none; }
-.ghosty::before { color: rgba(127, 214, 255, .35); transform: translate(-10px, 4px); filter: blur(3px); }
-.ghosty::after { color: rgba(200, 160, 255, .25); transform: translate(12px, -6px); filter: blur(6px); }
+.ghosty { position: relative; isolation: isolate; color: #f2fbff; opacity: 0; text-shadow: 0 0 2px rgba(255, 255, 255, .9), 0 0 16px rgba(127, 214, 255, .9), 0 0 50px rgba(80, 160, 255, .5), 0 4px 18px rgba(0, 0, 0, .5); }
+/* 잔상은 글자 뒤(z-index:-1)에 깔아야 본 글자가 번지지 않는다 */
+.ghosty::before, .ghosty::after { content: attr(data-text); position: absolute; inset: 0; z-index: -1; pointer-events: none; text-shadow: none; }
+.ghosty::before { color: rgba(127, 214, 255, .22); transform: translate(-7px, 3px); filter: blur(2px); }
+.ghosty::after { color: rgba(200, 160, 255, .14); transform: translate(9px, -4px); filter: blur(4px); }
 .scene.hit .ghosty { animation: ghostIn 1.2s ease both, ghostFloat 4.5s 1.2s ease-in-out infinite; }
-@keyframes ghostIn { from { opacity: 0; filter: blur(30px); transform: scale(1.15); letter-spacing: .3em; } to { opacity: .92; filter: none; transform: none; } }
-@keyframes ghostFloat { 0%, 100% { transform: translateY(0); opacity: .92; } 50% { transform: translateY(-14px); opacity: .7; } }
+@keyframes ghostIn { from { opacity: 0; filter: blur(30px); transform: scale(1.15); letter-spacing: .3em; } to { opacity: 1; filter: none; transform: none; } }
+@keyframes ghostFloat { 0%, 100% { transform: translateY(0); opacity: 1; } 50% { transform: translateY(-12px); opacity: .86; } }
 
 /* ---------- 點 해부 ---------- */
 .eq { display: flex; align-items: flex-start; gap: 30px; }
