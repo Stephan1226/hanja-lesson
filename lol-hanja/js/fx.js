@@ -1,5 +1,5 @@
-/* 협곡의 한자 — 이펙트 엔진
- * 푸티지 위에 겹치는 캔버스 파티클(불씨·안개·스파크·빗방울·회오리·균열·베기)과
+/* 한자 특강(롤 속 한자어) — 이펙트 엔진
+ * 푸티지 위에 겹치는 캔버스 파티클(불씨·안개·스파크·빗방울·회오리·베기)과
  * WebAudio로 즉석 합성하는 효과음. 외부 라이브러리 없이 file:// 에서 동작한다.
  */
 (function () {
@@ -21,7 +21,7 @@
   };
 
   let under, top, cu, ct, shaker, flashEl;
-  let parts = [], emitters = [], rings = [], slashes = [], cracks = [];
+  let parts = [], emitters = [], rings = [], slashes = [];
   const sprites = new Map();
 
   function sprite(c) {
@@ -186,38 +186,8 @@
     slashes.push({ pts: o.pts, col: o.col || [255, 244, 214], glow: o.glow || [255, 196, 92], width: o.width ?? 22, dur: o.dur ?? 0.28, hold: o.hold ?? 0.45, t: 0, delay: o.delay ?? 0 });
   }
 
-  // 갑골 균열: 열 받은 뼈가 갈라지듯 가지를 치며 자라난다
-  function crack(x, y, o = {}) {
-    const segs = [];
-    const grow = (sx, sy, ang, len, depth, t0) => {
-      let cx = sx, cy = sy, a = ang, t = t0;
-      const step = rand(10, 18);
-      const n = Math.max(2, Math.floor(len / step));
-      for (let i = 0; i < n; i++) {
-        a += rand(-0.38, 0.38);
-        const nx = cx + Math.cos(a) * step, ny = cy + Math.sin(a) * step;
-        segs.push({ x0: cx, y0: cy, x1: nx, y1: ny, t, w: Math.max(0.8, (o.width ?? 3.4) * (1 - depth * 0.28) * (1 - (i / n) * 0.6)) });
-        cx = nx; cy = ny; t += step / (o.speed ?? 420);
-        if (depth < (o.depth ?? 3) && Math.random() < (o.branch ?? 0.12)) {
-          grow(cx, cy, a + rand(0.5, 1.2) * (Math.random() < 0.5 ? -1 : 1), len * rand(0.25, 0.55), depth + 1, t);
-        }
-      }
-    };
-    if (o.shape === 'bu') {
-      // 卜: 세로 금 하나에 옆으로 뻗은 가지 하나
-      const L = o.len ?? 260;
-      grow(x, y - L / 2, Math.PI / 2, L, 1, 0);
-      grow(x + rand(-4, 4), y - L * 0.08, -0.28, L * 0.42, 1, 0.35);
-    } else {
-      const arms = o.arms ?? 3;
-      for (let k = 0; k < arms; k++) grow(x, y, (o.angle ?? rand(0, TAU)) + (k * TAU) / arms + rand(-0.4, 0.4), o.len ?? rand(160, 340), 0, 0);
-    }
-    cracks.push({ segs, t: -(o.delay ?? 0), heat: o.heat ?? 1, top: o.top ?? false, col: o.col || [255, 170, 70] });
-  }
-
   function clear(all) {
     emitters = [];
-    cracks = [];
     if (all) { parts = []; rings = []; slashes = []; }
   }
 
@@ -234,30 +204,6 @@
 
     cu.clearRect(0, 0, W, H);
     ct.clearRect(0, 0, W, H);
-
-    // 균열 (파티클 아래)
-    for (const c of cracks) {
-      c.t += dt;
-      const ctx = c.top ? ct : cu;
-      ctx.save();
-      ctx.lineCap = 'round';
-      const cool = clamp((c.t - 1.2) / 3, 0, 1);
-      for (const s of c.segs) {
-        if (s.t > c.t) continue;
-        const k = clamp((c.t - s.t) / 0.06, 0, 1);
-        const x1 = s.x0 + (s.x1 - s.x0) * k, y1 = s.y0 + (s.y1 - s.y0) * k;
-        const hot = c.heat * (1 - cool * 0.75);
-        ctx.globalCompositeOperation = 'lighter';
-        ctx.strokeStyle = `rgba(${c.col.join(',')},${0.22 * hot})`;
-        ctx.lineWidth = s.w * 5;
-        ctx.beginPath(); ctx.moveTo(s.x0, s.y0); ctx.lineTo(x1, y1); ctx.stroke();
-        ctx.globalCompositeOperation = 'source-over';
-        ctx.strokeStyle = `rgba(${Math.round(255 - cool * 200)},${Math.round(230 - cool * 190)},${Math.round(170 - cool * 150)},${0.95})`;
-        ctx.lineWidth = s.w;
-        ctx.beginPath(); ctx.moveTo(s.x0, s.y0); ctx.lineTo(x1, y1); ctx.stroke();
-      }
-      ctx.restore();
-    }
 
     // 파티클
     const alive = [];
@@ -455,7 +401,7 @@
       ct = top.getContext('2d');
       requestAnimationFrame(frame);
     },
-    setAmbient, addAmbient, stopAmbient, sparks, ring, flash, shake, slash, crack, clear,
+    setAmbient, addAmbient, stopAmbient, sparks, ring, flash, shake, slash, clear,
     SFX,
   };
 })();

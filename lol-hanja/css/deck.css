@@ -1,4 +1,4 @@
-/* 협곡의 한자 — 1920×1080 고정 스테이지를 창 크기에 맞춰 축소/확대한다 */
+/* 한자 특강(롤 속 한자어) — 1920×1080 고정 스테이지를 창 크기에 맞춰 축소/확대한다 */
 :root {
   --ink: #010a13;
   --gold1: #f0e6d2;
@@ -471,7 +471,7 @@ svg.glyph path.faint { opacity: .35; }
 .qa p { margin: 0; font-size: 32px; line-height: 1.4; }
 .qa .a { font-size: 28px; color: var(--soft); display: flex; align-items: center; gap: 16px; justify-content: flex-end; }
 .qa .a .hz { font-size: 64px; color: #fff; text-shadow: 0 0 20px rgba(255, 210, 122, .6); }
-.loot { display: grid; grid-template-columns: repeat(7, 1fr); gap: 24px; justify-items: center; }
+.loot { display: grid; grid-template-columns: repeat(6, 1fr); gap: 24px; justify-items: center; }
 .tile { position: relative; width: 196px; height: 226px; perspective: 900px; }
 .tile .f, .tile .b { position: absolute; inset: 0; backface-visibility: hidden; border: 1px solid var(--gold3); display: flex; flex-direction: column; align-items: center; justify-content: center; box-shadow: 0 14px 40px rgba(0, 0, 0, .5); }
 .tile .f { padding: 30px; background: linear-gradient(rgba(14, 11, 6, .82), rgba(8, 6, 3, .9)), url(../assets/img/photo_plastron.jpg) 50% 50% / 700% auto; }

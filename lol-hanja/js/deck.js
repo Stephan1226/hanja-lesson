@@ -1,4 +1,4 @@
-/* 협곡의 한자 — 덱 컨트롤러
+/* 한자 특강(롤 속 한자어) — 덱 컨트롤러
  * 장면 전환 · 단계(빌드) 공개 · 영상 큐에 맞춘 이펙트 · 발표자 노트/목차.
  * 주소 끝의 #장면.단계 (예: #9.2) 로 바로 이동할 수 있다.
  */
@@ -68,24 +68,6 @@
     },
     hook: {
       enter() { FX.setAmbient([['motes', { rate: 10, colors: P.gold }]]); },
-    },
-    oracle: {
-      enter() {
-        FX.setAmbient([['motes', { rate: 8, colors: P.gold }]]);
-        later(() => { FX.crack(1180, 720, { arms: 3, len: 320 }); FX.crack(1650, 820, { arms: 2, len: 260, delay: 0.4 }); sfx('crack'); }, 700);
-        later(() => { FX.crack(1420, 160, { arms: 2, len: 220 }); sfx('crack'); }, 2200);
-      },
-      step(sc, n, dir) {
-        if (dir < 0) return;
-        if (n === 1) {
-          const [x, y] = centerOf($('[data-step="1"] .gbox', sc));
-          FX.crack(x - 150, y + 260, { shape: 'bu', len: 200, top: false, width: 4 });
-          FX.sparks(x, y, { n: 36, colors: P.gold, speed: [120, 520] });
-          sfx('crack');
-        }
-        if (n === 2) { FX.sparks(...centerOf($('[data-step="2"] .gbox', sc)), { n: 30, colors: P.gold, speed: [100, 420] }); sfx('ding'); }
-        if (n === 3) sfx('whoosh');
-      },
     },
     ch1: {
       enter() { FX.setAmbient([['motes', { rate: 16, colors: [...P.hex, ...P.gold] }]]); sfx('whoosh'); },
@@ -458,7 +440,7 @@
       }
       const b = document.createElement('button');
       b.innerHTML = `<em>${String(i + 1).padStart(2, '0')}</em>${sc.dataset.title || sc.dataset.id}`;
-      b.onclick = (e) => { e.stopPropagation(); toggleOverview(false); go(i, 0, 1); };
+      b.onclick = (e) => { e.stopPropagation(); b.blur(); toggleOverview(false); go(i, 0, 1); };
       grid.appendChild(b);
     });
   }
@@ -483,20 +465,29 @@
   }
 
   /* ---------- 입력 ---------- */
+  // 한글 입력 상태에서도 단축키가 먹도록 글자(e.key)가 아니라 물리 키(e.code)로 판별한다
+  const NEXT = ['ArrowRight', 'ArrowDown', 'Space', 'PageDown', 'Enter', 'NumpadEnter'];
+  const PREV = ['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'];
+  const COMMANDS = {
+    Home: () => go(0),
+    End: () => go(scenes.length - 1),
+    KeyF: toggleFS,
+    KeyM: toggleSound,
+    KeyN: toggleNotes,
+    KeyO: () => toggleOverview(),
+    Escape: () => toggleOverview(false),
+    KeyR: replay,
+  };
   addEventListener('keydown', (e) => {
     if (e.metaKey || e.ctrlKey || e.altKey) return;
-    if (unlock()) { e.preventDefault(); return; }
-    const k = e.key;
-    if (['ArrowRight', 'ArrowDown', ' ', 'PageDown', 'Enter'].includes(k)) { e.preventDefault(); next(); }
-    else if (['ArrowLeft', 'ArrowUp', 'PageUp', 'Backspace'].includes(k)) { e.preventDefault(); prev(); }
-    else if (k === 'Home') go(0);
-    else if (k === 'End') go(scenes.length - 1);
-    else if (k === 'f' || k === 'F') toggleFS();
-    else if (k === 'm' || k === 'M') toggleSound();
-    else if (k === 'n' || k === 'N') toggleNotes();
-    else if (k === 'o' || k === 'O') toggleOverview();
-    else if (k === 'Escape') toggleOverview(false);
-    else if (k === 'r' || k === 'R') replay();
+    const c = e.code;
+    const nav = NEXT.includes(c) || PREV.includes(c);
+    if (nav || COMMANDS[c]) e.preventDefault();
+    // 시작 화면에서 누른 이동 키는 '시작'으로만 쓴다. F·M 같은 명령은 시작과 함께 바로 실행.
+    if (unlock() && nav) return;
+    if (NEXT.includes(c)) next();
+    else if (PREV.includes(c)) prev();
+    else if (COMMANDS[c] && !e.repeat) COMMANDS[c]();
   });
   $('#viewport').addEventListener('click', (e) => {
     if (unlock()) return;
