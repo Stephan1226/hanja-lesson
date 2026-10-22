@@ -270,6 +270,9 @@ svg.glyph path.faint { opacity: .35; }
 .layer p b { color: var(--paper); }
 .layer .like { font-size: 28px; font-weight: 900; color: var(--c, var(--ochre1)); text-align: right; }
 .layer .like small { display: block; font-size: 18px; font-weight: 500; color: var(--muted); }
+.layers.four { gap: 12px; }
+.layers.four .layer { padding: 8px 22px; }
+.layers.four .layer .hz { font-size: 64px; line-height: 1.15; }
 
 /* ---------- 11 서유기 연표 ---------- */
 .quiz3 { display: flex; gap: 24px; }

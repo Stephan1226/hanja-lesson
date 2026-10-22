@@ -105,12 +105,12 @@
       enter() { FX.setAmbient([motes(8)]); },
       step(sc, n, dir) { if (dir > 0 && n) sfx(n === 1 ? 'brush' : 'ding'); },
     },
-    dian: {
+    zhuan: {
       enter() { FX.setAmbient([motes(8)]); },
       step(sc, n, dir) {
         if (dir < 0 || !n) return;
-        if (n === 2) { const [x, y] = at('.gcard.hero .gbox', sc); FX.ring(x, y, { col: [240, 210, 140], r1: 180 }); }
-        sfx(n === 5 ? 'chord' : 'brush');
+        if (n === 2) { const [x, y] = at('.gcard.modern.hero .gbox', sc); FX.ring(x, y, { col: [240, 210, 140], r1: 180 }); }
+        sfx(n === 4 ? 'chord' : n === 5 ? 'ding' : 'brush');
       },
     },
     zhushu: {
@@ -133,14 +133,11 @@
       enter() { FX.setAmbient([motes(8)]); },
       step(sc, n, dir) {
         if (dir < 0 || !n) return;
-        if (n <= 3) {
-          const marks = $$(`.mark[data-step="${n}"]`, sc);
-          const cols = [null, [201, 164, 92], [127, 209, 174], [214, 85, 58]];
-          marks.forEach((m) => { const [x, y] = centerOf(m); FX.ring(x, y, { col: cols[n], r1: 90, width: 5 }); });
-          sfx('ding');
-        }
-        if (n === 4) sfx('brush');
-        if (n === 5) { FX.shake(5, 0.25); sfx('boom'); }
+        const cols = { 經: [201, 164, 92], 注: [127, 209, 174], 疏: [214, 85, 58] };
+        const marks = $$(`.mark[data-step="${n}"]`, sc);
+        marks.forEach((m) => { const [x, y] = centerOf(m); FX.ring(x, y, { col: cols[m.textContent.trim()], r1: 90, width: 5 }); });
+        if (n === +$('.qbox', sc).dataset.step) { FX.shake(5, 0.25); sfx('boom'); }
+        else sfx(marks.length ? 'ding' : 'brush');
       },
     },
     ch2: {
