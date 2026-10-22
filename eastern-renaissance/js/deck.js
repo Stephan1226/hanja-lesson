@@ -110,7 +110,7 @@
       step(sc, n, dir) {
         if (dir < 0 || !n) return;
         if (n === 2) { const [x, y] = at('.gcard.modern.hero .gbox', sc); FX.ring(x, y, { col: [240, 210, 140], r1: 180 }); }
-        sfx(n === 4 ? 'chord' : n === 5 ? 'ding' : 'brush');
+        sfx({ 4: 'chord', 5: 'bell', 6: 'ding' }[n] || 'brush');
       },
     },
     zhushu: {

@@ -322,6 +322,7 @@ svg.glyph path.faint { opacity: .35; }
 .pair .hz { font-size: 68px; color: var(--paper); }
 .pair p { margin: 0; font-size: 24px; line-height: 1.45; color: var(--paper2); }
 .pair p b { color: var(--paper); }
+.pair .hz em { font-style: normal; color: var(--seal2); }
 
 /* ---------- 지도 ---------- */
 .map svg { width: 1000px; height: 850px; display: block; }
